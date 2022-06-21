@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: todoapi
-        image: dotnetkube.azurecr.io/todoapi:latest.#{Build.BuildId}#
+        image: dotnetkube.azurecr.io/todoapi:latest
         ports: 
         - containerPort: 80
         resources:
