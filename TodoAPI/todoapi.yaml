@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapi-deployment
+  labels:
+    app: todoapi
+spec:
+  selector:
+    matchLabels:
+      app: todoapi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: todoapi
+    spec:
+      containers:
+      - name: todoapi
+        image: dotnetkube.azurecr.io/todoapi:latest.#{Build.BuildId}#
+        ports: 
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "0.5"
+          requests:
+            memory: "256Mi"
+            cpu: "0.3"
+        env: 
+        - name: ConnectionStrings_dbsettings
+          valueFrom:
+            secretKeyRef:
+              name: mssql-secret
+              key: db-connection-string-secret 
+          
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: todoapi
+spec:
+  selector:
+    app: todoapi
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+        
